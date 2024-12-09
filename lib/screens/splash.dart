@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../appsize.dart';
 import '../session/shared_preferences.dart';
-import 'home_page.dart';
+
 import 'login.dart';
+import 'main_homepage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // vm = Provider.of<CommonViewmodel>(context, listen: false);
 
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
     }
         // }

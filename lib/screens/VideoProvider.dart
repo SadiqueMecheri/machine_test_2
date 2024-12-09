@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:pod_player/pod_player.dart';
 
 import '../Model/Video.dart';
 
@@ -21,20 +21,14 @@ class VideoProvider extends ChangeNotifier {
 
   List<Video> get videos => _videos;
 
-  void togglePlay(int index, VideoPlayerController controller) {
-    for (int i = 0; i < _videos.length; i++) {
-      if (i != index) {
-        _videos[i].isPlaying = false;
-      }
-    }
-    _videos[index].isPlaying = !_videos[index].isPlaying;
-
-    notifyListeners();
-
+  void togglePlay(int index, PodPlayerController controller) {
     if (_videos[index].isPlaying) {
-      controller.play();
-    } else {
       controller.pause();
+      _videos[index].isPlaying = false;
+    } else {
+      controller.play();
+      _videos[index].isPlaying = true;
     }
+    notifyListeners();
   }
 }

@@ -5,10 +5,10 @@ import 'contraints.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import 'auth_repository.dart';
 import 'screens/CategoryProvider.dart';
-import 'screens/home_page.dart';
+import 'screens/Category_Provider_Home.dart';
+import 'screens/HomeProvider.dart';
 import 'screens/otp_screen.dart';
 import 'screens/splash.dart';
 
@@ -24,6 +24,9 @@ void main() {
       ),
       ChangeNotifierProvider(create: (_) => VideoProvider()),
       ChangeNotifierProvider(create: (_) => CategoryProvider()),
+      ChangeNotifierProvider(create: (_) => HomeProvider()),
+      ChangeNotifierProvider(
+          create: (_) => CategoryProvider_Home()..fetchData()),
     ],
     child: const MyApp(),
   ));

@@ -4,19 +4,23 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../Model/Category.dart';
+import '../session/shared_preferences.dart';
 
 class CategoryProvider with ChangeNotifier {
   List<Category> _categories = [];
   List<int> _selectedCategoryIds = [];
   File? _thumbnail;
   File? _video;
+  bool _isLoading = false; // Added loading state
 
   List<Category> get categories => _categories;
   List<int> get selectedCategoryIds => _selectedCategoryIds;
   File? get thumbnail => _thumbnail;
   File? get video => _video;
+  bool get isLoading => _isLoading; // Getter for loading
 
   CategoryProvider() {
     fetchCategories();
@@ -55,39 +59,104 @@ class CategoryProvider with ChangeNotifier {
     }
   }
 
-  Future<void> pickVideo() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      _video = File(pickedFile.path);
-      notifyListeners();
+  Future<void> pickVideo(BuildContext context) async {
+    _checkAndRequestPermission(context);
+  }
+
+  Future<void> _checkAndRequestPermission(BuildContext context) async {
+    // Check the current permission status
+    final permissionStatus = await Permission.storage.status;
+
+    if (permissionStatus.isGranted) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Storage permission already granted')),
+      // );
+
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        _video = File(pickedFile.path);
+        notifyListeners();
+      }
+    } else if (permissionStatus.isDenied) {
+      // Request the permission if denied
+      final result = await Permission.storage.request();
+
+      if (result.isGranted) {
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Permission Granted')),
+        // );
+        final picker = ImagePicker();
+        final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
+        if (pickedFile != null) {
+          _video = File(pickedFile.path);
+          notifyListeners();
+        }
+        // Place your logic here when permission is granted
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Permission Denied')),
+        );
+      }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Handle the case where permission has been permanently denied
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enable storage permission from app settings'),
+        ),
+      );
+      openAppSettings();
     }
   }
 
   Future<void> uploadData(String description) async {
-    if (_thumbnail == null || _video == null) {
-      throw Exception("Thumbnail and Video are required.");
-    }
+    try {
+      _isLoading = true; // Show loader
 
-    final uri = Uri.parse(
-        'https://example.com/api/upload'); // Replace with your API endpoint
-    final request = http.MultipartRequest('POST', uri);
+      notifyListeners();
+      String? token = await Store.getFcmtoken();
+      if (_thumbnail == null || _video == null) {
+        throw Exception("Thumbnail and Video are required.");
+      }
 
-    // Add text fields
-    request.fields['description'] = description;
-    request.fields['categories'] = _selectedCategoryIds.join(',');
+      final uri = Uri.parse(
+          'https://frijo.noviindus.in/api/my_feed'); // Replace with your API endpoint
+      final request = http.MultipartRequest(
+        'POST',
+        uri,
+      );
 
-    // Add files
-    request.files
-        .add(await http.MultipartFile.fromPath('thumbnail', _thumbnail!.path));
-    request.files.add(await http.MultipartFile.fromPath('video', _video!.path));
+      // Add custom headers
+      request.headers.addAll({
+        "Authorization":
+            "Bearer ${token}", // Replace with a valid token if needed
+        'Content-Type': 'multipart/form-data',
+      });
 
-    final response = await request.send();
+      // Add text fields
+      request.fields['desc'] = description;
+      request.fields['category'] = _selectedCategoryIds.join(',');
 
-    if (response.statusCode == 200) {
-      print('Upload successful');
-    } else {
-      throw Exception('Failed to upload data');
+      // Add files
+      request.files
+          .add(await http.MultipartFile.fromPath('image', _thumbnail!.path));
+      request.files
+          .add(await http.MultipartFile.fromPath('video', _video!.path));
+      log("lloaddd first");
+      final response = await request.send();
+
+      log("lloaddd");
+
+      if (response.statusCode == 202) {
+        print('Upload successful');
+      } else {
+        throw Exception('Failed to upload data');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    } finally {
+      _isLoading = false; // Hide loader
+      notifyListeners();
     }
   }
 }

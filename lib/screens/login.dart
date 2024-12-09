@@ -7,7 +7,7 @@ import '../appsize.dart';
 import '../contraints.dart';
 import '../session/shared_preferences.dart';
 import '../widgets/custom_textformfiled.dart';
-import 'home_page.dart';
+import 'main_homepage.dart';
 
 class LoginScreen extends StatelessWidget {
   TextEditingController _emailcontroller = TextEditingController();
@@ -129,7 +129,7 @@ class LoginScreen extends StatelessWidget {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomePage()));
+                                    builder: (context) => HomeScreen()));
                           } else if (viewModel.message.isNotEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

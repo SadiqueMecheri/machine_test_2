@@ -45,6 +45,9 @@ dependencies:
   uuid: ^4.5.1
   video_player: ^2.5.0
   image_picker: ^0.8.7+5
+  pod_player: ^0.2.2
+  dotted_border:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:

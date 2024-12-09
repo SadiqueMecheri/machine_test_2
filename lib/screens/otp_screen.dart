@@ -1,12 +1,10 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../CommonViewModel.dart';
 import '../contraints.dart';
 import '../session/shared_preferences.dart';
-import 'home_page.dart';
+import 'main_homepage.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -225,7 +223,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomePage()));
+                                    builder: (context) => HomeScreen()));
                           } else if (viewModel.message.isNotEmpty) {
                             // log("respppp cpmeddd---" +
                             //     viewModel.loginResponse!.status.toString());
