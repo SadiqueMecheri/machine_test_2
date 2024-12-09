@@ -177,10 +177,12 @@ class _AddFeedScreenState extends State<AddFeedScreen> {
                                     child: VideoPlayer(_videoPlayerController!),
                                   ),
                             const SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: togglePlayPause,
-                              child: Text(isPlaying ? 'Pause' : 'Play'),
-                            ),
+                            categoryProvider.video == null
+                                ? SizedBox()
+                                : ElevatedButton(
+                                    onPressed: togglePlayPause,
+                                    child: Text(isPlaying ? 'Pause' : 'Play'),
+                                  ),
                             const SizedBox(
                               height: 10,
                             ),

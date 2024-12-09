@@ -36,6 +36,32 @@ class _VideoCardState extends State<VideoCard> {
     super.dispose();
   }
 
+  // void _disposeController() {
+  //   if (_controller != null) {
+  //     // Pause the controller if it's playing and dispose of it
+  //     if (_controller!.isVideoPlaying) {
+  //       _controller!.pause();
+  //     }
+  //     _controller!.dispose();
+  //     _controller = null; // Set the controller to null
+  //   }
+  // }
+
+  void playvideo(String videolink, int playitem) {
+    // controller.dispose();
+
+    _controller = PodPlayerController(
+      podPlayerConfig: const PodPlayerConfig(
+          // autoPlay: false,
+          ),
+      playVideoFrom: PlayVideoFrom.network(videolink
+          // "https://www.youtube.com/watch?v=fozAlpTeahM"
+          // "https://youtu.be/A3ltMaM6noM"
+          // widget.video,
+          ),
+    )..initialise();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
