@@ -69,6 +69,9 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> uploadData(String description) async {
+
+
+    log("desc---"+description);
     try {
       _isLoading = true; // Show loader
 

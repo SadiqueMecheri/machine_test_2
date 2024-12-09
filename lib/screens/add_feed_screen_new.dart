@@ -94,13 +94,22 @@ class _AddFeedScreenState extends State<AddFeedScreen> {
                             ? const CircularProgressIndicator() // Show loader if isLoading is true
                             : InkWell(
                                 onTap: () async {
+                                  if(descriptionController.text.isEmpty){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text('Enter description')),
+                                    );
+                                  }else{
+
+
                                   try {
                                     await categoryProvider
                                         .uploadData(descriptionController.text);
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        _videoPlayerController!.dispose();                                    ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text('Upload Successful')),
                                     );
+
 
                                     Navigator.pop(context);
                                   } catch (e) {
@@ -108,6 +117,8 @@ class _AddFeedScreenState extends State<AddFeedScreen> {
                                       SnackBar(
                                           content: Text('Upload Failed: $e')),
                                     );
+                                  }
+
                                   }
                                 },
                                 child: Container(
@@ -171,13 +182,18 @@ class _AddFeedScreenState extends State<AddFeedScreen> {
                           children: [
                             categoryProvider.video == null
                                 ? Image.asset("assets/images/video.png")
-                                : AspectRatio(
+                                :
+
+                            _videoPlayerController==null?Image.asset("assets/images/video.png"):
+                            AspectRatio(
+
+
                                     aspectRatio: _videoPlayerController!
                                         .value.aspectRatio,
                                     child: VideoPlayer(_videoPlayerController!),
                                   ),
                             const SizedBox(height: 10),
-                            categoryProvider.video == null
+                            categoryProvider.video ==null||   _videoPlayerController==null
                                 ? SizedBox()
                                 : ElevatedButton(
                                     onPressed: togglePlayPause,
