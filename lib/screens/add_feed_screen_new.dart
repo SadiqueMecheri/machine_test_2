@@ -354,7 +354,7 @@ class _AddFeedScreenState extends State<AddFeedScreen> {
                                     const SizedBox(
                                       width: 5,
                                     ),
-                                    Image.asset("assets/images/back-arrow.png")
+                                    Image.asset("assets/images/arrow-circle-right.png")
                                   ],
                                 ),
                               ),

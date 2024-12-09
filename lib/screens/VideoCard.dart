@@ -23,6 +23,11 @@ class _VideoCardState extends State<VideoCard> {
   @override
   void initState() {
     _controller = PodPlayerController(
+      podPlayerConfig: const PodPlayerConfig(
+          autoPlay: false,
+          isLooping: false,
+
+      ),
       playVideoFrom: PlayVideoFrom.network(
         widget.video.videoUrl,
       ),
@@ -47,20 +52,7 @@ class _VideoCardState extends State<VideoCard> {
   //   }
   // }
 
-  void playvideo(String videolink, int playitem) {
-    // controller.dispose();
 
-    _controller = PodPlayerController(
-      podPlayerConfig: const PodPlayerConfig(
-          // autoPlay: false,
-          ),
-      playVideoFrom: PlayVideoFrom.network(videolink
-          // "https://www.youtube.com/watch?v=fozAlpTeahM"
-          // "https://youtu.be/A3ltMaM6noM"
-          // widget.video,
-          ),
-    )..initialise();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +65,12 @@ class _VideoCardState extends State<VideoCard> {
           },
           child: Container(
             height: 200,
-            child: PodVideoPlayer(controller: _controller),
+            child: PodVideoPlayer(controller: _controller,   videoThumbnail:  DecorationImage(
+    /// load from asset: AssetImage('asset_path')
+    image: NetworkImage(widget.video.imageUrl,
+    ),
+    fit: BoxFit.cover,
+    ),),
           ),
         ),
       ],

@@ -60,52 +60,11 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> pickVideo(BuildContext context) async {
-    _checkAndRequestPermission(context);
-  }
-
-  Future<void> _checkAndRequestPermission(BuildContext context) async {
-    // Check the current permission status
-    final permissionStatus = await Permission.storage.status;
-
-    if (permissionStatus.isGranted) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Storage permission already granted')),
-      // );
-
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        _video = File(pickedFile.path);
-        notifyListeners();
-      }
-    } else if (permissionStatus.isDenied) {
-      // Request the permission if denied
-      final result = await Permission.storage.request();
-
-      if (result.isGranted) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Permission Granted')),
-        // );
-        final picker = ImagePicker();
-        final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-        if (pickedFile != null) {
-          _video = File(pickedFile.path);
-          notifyListeners();
-        }
-        // Place your logic here when permission is granted
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Permission Denied')),
-        );
-      }
-    } else if (permissionStatus.isPermanentlyDenied) {
-      // Handle the case where permission has been permanently denied
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enable storage permission from app settings'),
-        ),
-      );
-      openAppSettings();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      _video = File(pickedFile.path);
+      notifyListeners();
     }
   }
 
